@@ -1,0 +1,2 @@
+FROM postgres
+RUN echo POSTGRES_USER
