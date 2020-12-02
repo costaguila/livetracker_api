@@ -5,7 +5,6 @@ import psycopg2
 
 from apps.vehicles.models import VehicleModel
 
-
 async def prepare_tables(pg):
     tables = [VehicleModel.__table__,]
     async with pg.acquire() as conn:
