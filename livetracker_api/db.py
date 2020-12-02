@@ -1,25 +1,18 @@
 import os
 from aiopg.sa import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import CreateTable
-from sqlalchemy import Column, Integer, String, Boolean
 import psycopg2
 
+from apps.vehicles.models import VehicleModel
 
-Base = declarative_base()
-
-class Vehicle(Base):
-    __tablename__ = 'vehicle'
-    id = Column(Integer, primary_key=True)
-    hash = Column(String(256), unique=True)
-    live = Column(Boolean, default=True)
 
 async def prepare_tables(pg):
-    tables = [Vehicle.__table__,]
+    tables = [VehicleModel.__table__,]
     async with pg.acquire() as conn:
         for table in tables:
             try:
                 create_expr = CreateTable(table)
+                create_expr = str(create_expr).replace("CREATE TABLE","CREATE TABLE IF NOT EXISTS")
                 await conn.execute(create_expr)
             except psycopg2.ProgrammingError:
                 pass
